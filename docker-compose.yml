@@ -1,0 +1,41 @@
+version: '3.9'
+services:
+  mysql-master:
+    image: bitnami/mysql:latest
+    container_name: mysql-master
+    restart: unless-stopped
+    env_file: master/.env.master
+    cap_add:
+      - all
+    volumes:
+      - ./master/data:/bitnami/mysql/data
+      - ./master/my.cnf:/opt/bitnami/mysql/conf/my.cnf
+    environment:
+      - TZ:${TZ}
+      - MYSQL_USER:${MYSQL_USER}
+      - MYSQL_PASSWORD:${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD:${MYSQL_PASSWORD}
+    networks:
+      default:
+        aliases:
+          - mysql
+
+  mysql-slave:
+    image: bitnami/mysql:latest
+    container_name: mysql-slave
+    restart: unless-stopped
+    env_file: slave/.env.slave
+    cap_add:
+      - all
+    volumes:
+      - ./slave/data:/bitnami/mysql/data
+      - ./slave/my.cnf:/opt/bitnami/mysql/conf/my.cnf
+    environment:
+      - TZ:${TZ}
+      - MYSQL_USER:${MYSQL_USER}
+      - MYSQL_PASSWORD:${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD:${MYSQL_ROOT_PASSWORD}
+    networks:
+      default:
+        aliases:
+          - mysql
